@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "92358301341",
+    "project_id": "canscan-proj",
+    "storage_bucket": "canscan-proj.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92358301341:android:4466a7e344328b971f6674",
+        "android_client_info": {
+          "package_name": "com.canscan.can_scan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn6TSXQb1LBLj4DiEUgH_E8aKdfW32l54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92358301341:android:03d0125085427c101f6674",
+        "android_client_info": {
+          "package_name": "com.project.canscan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn6TSXQb1LBLj4DiEUgH_E8aKdfW32l54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

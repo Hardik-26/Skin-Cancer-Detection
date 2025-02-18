@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> fetchItems() async {
-    final response = await http.get(Uri.parse('https://mocki.io/v1/b8529de5-9803-4ff4-9647-010c0196f9b6'));
+    final response = await http.get(Uri.parse('https://mocki.io/v1/8f6ea5f9-9f2e-4285-a3d2-c213456d31ad'));
     if (response.statusCode == 200) {
       setState(() {
         items = json.decode(response.body);
@@ -33,9 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('CanScan', style: TextStyle(fontFamily: 'BaskervvilleSC')),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-        ),
       ),
 
       bottomNavigationBar: BottomAppBar(
@@ -55,12 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }),
               SizedBox(width: 0),
               _buildNavButton(Icons.home, () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MyHomePage()
-                    )
-                );
+                fetchItems();
               }),
               _buildNavButton(Icons.person, () {
                 // Handel Profile Tap
@@ -71,7 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+
+        },
         backgroundColor: Colors.transparent,
         shape: CircleBorder(),
         elevation: 5,
