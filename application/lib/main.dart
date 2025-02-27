@@ -2,6 +2,7 @@ import 'package:can_scan/Pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:can_scan/Pages/cam.dart';
 import 'package:can_scan/Pages/login.dart';
+import 'package:can_scan/Pages/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       title: 'CanScan',
       debugShowCheckedModeBanner: false,
-      home: Login(),
+      home: CameraApp(),
     );
   }
 }
