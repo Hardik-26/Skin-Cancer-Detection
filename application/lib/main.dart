@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       title: 'CanScan',
       debugShowCheckedModeBanner: false,
-      home: CameraApp(),
+      home: SplashScreen(),
     );
   }
 }
