@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,9 +13,11 @@ class Login extends StatefulWidget {
 
 class _login extends State<Login> {
   // Variables to store input
-  String email = '';
-  String password = '';
-  List<dynamic> items = [];
+  String phoneNumber = '';
+  List<TextEditingController> otpControllers = List.generate(4, (index) => TextEditingController());
+  List<FocusNode> otpFocusNodes = List.generate(4, (index) => FocusNode());
+  bool showOtpFields = false;
+  int generatedOTP = 0;
 
   @override
   void initState() {
@@ -45,7 +49,6 @@ class _login extends State<Login> {
                 "Don't Have An Account? Sign Up",
                 style: TextStyle(
                   color: Colors.white,
-                  decoration: TextDecoration.underline,
                 ),
               ),
             ),
@@ -66,27 +69,11 @@ class _login extends State<Login> {
             child: TextField(
               onChanged: (value) {
                 setState(() {
-                  email = value;
+                  phoneNumber = value;
                 });
               },
               decoration: InputDecoration(
-                hintText: 'Enter your email',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                });
-              },
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'Enter your password',
+                hintText: 'Enter your Phone Number',
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               ),
@@ -96,27 +83,74 @@ class _login extends State<Login> {
             padding: const EdgeInsets.all(20),
             child: ElevatedButton(
               onPressed: () {
-                // Add login logic here
-                print('Email: $email');
-                print('Password: $password');
-
-                // Example of how to use the stored values:
-                // performLogin(email, password);
+                if (phoneNumber.isEmpty) {
+                  showMessage("Please enter your phone number!");
+                  return;
+                }
+                setState(() {
+                  showOtpFields = true;
+                });
+                performLogin(phoneNumber);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                child: Text('Login'),
+                child: Text('Get OTP'),
               ),
             ),
           ),
+          if (showOtpFields)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(4, (index) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: SizedBox(
+                  width: 50,
+                  child: TextField(
+                    controller: otpControllers[index],
+                    focusNode: otpFocusNodes[index],
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    maxLength: 1,
+                    decoration: InputDecoration(
+                      counterText: '',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      if (value.isNotEmpty && index < 3) {
+                        FocusScope.of(context).requestFocus(otpFocusNodes[index + 1]);
+                      } else if (value.isEmpty && index > 0) {
+                        FocusScope.of(context).requestFocus(otpFocusNodes[index - 1]);
+                      }
+                    },
+                  ),
+                ),
+              )),
+            ),
+          if (showOtpFields)
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: ElevatedButton(
+                onPressed: () {
+                  verifyOTP();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  child: Text('Verify OTP'),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
   // Example login function
-  void performLogin(String email, String password) async {
+  void performLogin(String phoneNumber) async {
     try {
+      print('Phone Number: $phoneNumber');
+      generatedOTP = generateOTP();
+      print('Generated OTP: $generatedOTP');
+
       // Add your login API call here
       // Example:
       // final response = await http.post(
@@ -136,5 +170,47 @@ class _login extends State<Login> {
     } catch (e) {
       print('Error during login: $e');
     }
+  }
+
+  int generateOTP() {
+    Random random = Random();
+    return 1000 + random.nextInt(9000); // Ensures a 4-digit number
+  }
+
+  // Function to verify OTP input
+  void verifyOTP() {
+    String enteredOTP = otpControllers.map((controller) => controller.text).join();
+
+    if (enteredOTP.isEmpty || enteredOTP.length < 4) {
+      showMessage("Please enter the OTP!");
+      return;
+    }
+
+    if (int.tryParse(enteredOTP) == generatedOTP) {
+      showMessage("OTP Verified Successfully!");
+    } else {
+      showMessage("Incorrect OTP, please try again!");
+    }
+  }
+
+  void showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: Colors.black,  // Text color
+            fontSize: 16,         // Increased text size
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Color(0xFFCCD2F2),  // Background color #ccd2f2
+        duration: Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating, // Makes it appear above the bottom navbar
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // Rounded corners
+        ),
+      ),
+    );
   }
 }

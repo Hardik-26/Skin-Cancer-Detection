@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:can_scan/Pages/home.dart'; // Import your home screen
+import 'package:can_scan/Pages/home.dart';
+import 'package:can_scan/Pages/login.dart';// Import your home screen
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (_controller.value.position == _controller.value.duration) {
         // Navigate to home screen when video ends
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MyHomePage()),
+          MaterialPageRoute(builder: (context) => Login()),
         );
       }
     });
