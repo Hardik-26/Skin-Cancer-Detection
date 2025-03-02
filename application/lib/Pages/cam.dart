@@ -323,3 +323,4 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
     );
   }
 }
+// Comment for commit.
