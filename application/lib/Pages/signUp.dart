@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:can_scan/Pages/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -138,9 +139,10 @@ class _signUp extends State<Signup> {
                   showMessage(" Enter your phone number!");
                   return;
                 }
-                setState(() {
-                  showOtpFields = true;
-                });
+                if (phoneNumber.length != 10) {
+                  showMessage("Phone number must be 10 digits!");
+                  return;
+                }
                 performSignUp(firstName, lastName, phoneNumber);
               },
               child: Padding(
@@ -183,6 +185,8 @@ class _signUp extends State<Signup> {
               child: ElevatedButton(
                 onPressed: () {
                   verifyOTP();
+                  registerUser();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
@@ -198,28 +202,21 @@ class _signUp extends State<Signup> {
   // Example signup function
   void performSignUp(String firstName, String lastName, String phoneNumber) async {
     try {
-      print('First: $firstName');
-      print('Last: $lastName');
-      print('Phone Number: $phoneNumber');
-      generatedOTP = generateOTP();
-      print('Generated OTP: $generatedOTP');
+      bool exists = await userAlreadyExist(phoneNumber);
 
-      // Add your login API call here
-      // Example:
-      // final response = await http.post(
-      //   Uri.parse('your-api-endpoint'),
-      //   body: {
-      //     'email': email,
-      //     'password': password,
-      //   },
-      // );
-
-      // if (response.statusCode == 200) {
-      //   Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => HomePage()),
-      //   );
-      // }
+      if (exists) {
+        showMessage("Phone Number Already Registered");
+        return;
+      } else {
+        setState(() {
+          showOtpFields = true;
+        });
+        generatedOTP = generateOTP();
+        print('First: $firstName');
+        print('Last: $lastName');
+        print('Phone Number: $phoneNumber');
+        print('Generated OTP: $generatedOTP');
+      }
     } catch (e) {
       print('Error during Sign Up: $e');
     }
@@ -231,7 +228,7 @@ class _signUp extends State<Signup> {
   }
 
   // Function to verify OTP input
-  void verifyOTP() {
+  Future<void> verifyOTP() async {
     String enteredOTP = otpControllers.map((controller) => controller.text).join();
 
     if (enteredOTP.isEmpty || enteredOTP.length < 4) {
@@ -266,5 +263,50 @@ class _signUp extends State<Signup> {
       ),
     );
   }
+
+  Future<void> registerUser() async {
+    try {
+      // Reference to Firestore collection
+      CollectionReference users = FirebaseFirestore.instance.collection('user');
+
+      // User data to be stored
+      Map<String, dynamic> userData = {
+        "name": firstName,
+        "lastName": lastName,
+        "number": phoneNumber,
+        "age": null,
+        "cancer_history": null,
+        "drinks": null,
+        "fitzpatrick": null,
+        "gender": null,
+        "has_piped_water": null,
+        "has_sewage_system": null,
+        "pesticide_exposore": null,
+        "skin_cancer_history": null,
+        "smokes": null
+      };
+
+      // Add user data to Firestore
+      await users.add(userData);
+
+      print("User registered successfully!");
+    } catch (e) {
+      print("Error registering user: $e");
+    }
+  }
+
+  Future<bool> userAlreadyExist(String phoneNumber) async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('user');
+
+      // Query Firestore to check if a document with the given phone number exists
+      QuerySnapshot querySnapshot = await users.where('number', isEqualTo: int.parse(phoneNumber)).get();
+
+      // If any document is found, the user already exists
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print("Error checking user existence: $e");
+      return false; // Assume user doesn't exist in case of error
+    }
+  }
 }
-// Comment for commit.

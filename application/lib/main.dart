@@ -2,7 +2,9 @@ import 'package:can_scan/Pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:can_scan/Pages/cam.dart';
 import 'package:can_scan/Pages/login.dart';
+import 'package:can_scan/Pages/info.dart';
 import 'package:can_scan/Pages/splash.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   runApp(const MyApp());

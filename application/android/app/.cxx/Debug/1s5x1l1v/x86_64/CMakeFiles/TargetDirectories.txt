@@ -1,0 +1,2 @@
+C:/Projects/Skin-Cancer-Detection/application/android/app/.cxx/Debug/1s5x1l1v/x86_64/CMakeFiles/edit_cache.dir
+C:/Projects/Skin-Cancer-Detection/application/android/app/.cxx/Debug/1s5x1l1v/x86_64/CMakeFiles/rebuild_cache.dir

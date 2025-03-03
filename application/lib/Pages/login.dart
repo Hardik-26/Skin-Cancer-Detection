@@ -5,14 +5,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:can_scan/Pages/home.dart';
 import 'package:can_scan/Pages/signUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-class Login extends StatefulWidget {
+class Login extends StatefulWidget  {
   const Login({super.key});
   @override
   _login createState() => _login();
 }
 
-class _login extends State<Login> {
+class _login extends State<Login>  {
   // Variables to store input
   String phoneNumber = '';
   List<TextEditingController> otpControllers = List.generate(4, (index) => TextEditingController());
@@ -95,9 +97,10 @@ class _login extends State<Login> {
                   showMessage("Enter your phone number!");
                   return;
                 }
-                setState(() {
-                  showOtpFields = true;
-                });
+                if (phoneNumber.length != 10) {
+                  showMessage("Phone number must be 10 digits!");
+                  return;
+                }
                 performLogin(phoneNumber);
               },
               child: Padding(
@@ -155,26 +158,19 @@ class _login extends State<Login> {
   // Example login function
   void performLogin(String phoneNumber) async {
     try {
-      print('Phone Number: $phoneNumber');
-      generatedOTP = generateOTP();
-      print('Generated OTP: $generatedOTP');
+      bool exists = await userExists(phoneNumber);
 
-      // Add your login API call here
-      // Example:
-      // final response = await http.post(
-      //   Uri.parse('your-api-endpoint'),
-      //   body: {
-      //     'email': email,
-      //     'password': password,
-      //   },
-      // );
-
-      // if (response.statusCode == 200) {
-      //   Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => HomePage()),
-      //   );
-      // }
+      if (exists) {
+        generatedOTP = generateOTP();
+        setState(() {
+          showOtpFields = true;
+        });
+        print('Phone Number: $phoneNumber');
+        print('Generated OTP: $generatedOTP');
+      } else {
+        showMessage("Not a Registered User. Sign Up!!");
+        return;
+      }
     } catch (e) {
       print('Error during login: $e');
     }
@@ -196,6 +192,7 @@ class _login extends State<Login> {
 
     if (int.tryParse(enteredOTP) == generatedOTP) {
       showMessage("Login Successfully!");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
     } else {
       showMessage("Incorrect OTP,  try again!");
     }
@@ -221,5 +218,20 @@ class _login extends State<Login> {
       ),
     );
   }
+
+  Future<bool> userExists(String phoneNumber) async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('user');
+
+      // Query Firestore to check if a document with the given phone number exists
+      QuerySnapshot querySnapshot = await users.where('number', isEqualTo: int.parse(phoneNumber)).get();
+
+      // If any document is found, the user already exists
+      print(querySnapshot.docs);
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print("Error checking user existence: $e");
+      return false; // Assume user doesn't exist in case of error
+    }
+  }
 }
-// Comment for commit.

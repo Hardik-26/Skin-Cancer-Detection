@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:can_scan/Pages/cam.dart';
+import 'package:can_scan/Pages/info.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -49,7 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 // Handel Settings Tap
               }),
               _buildNavButton(Icons.info, () {
-                // Handel Info Tap
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => AboutPage()),
+                  );
+                };
               }),
               SizedBox(width: 0),
               _buildNavButton(Icons.home, () {
