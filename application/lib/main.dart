@@ -7,7 +7,17 @@ import 'package:can_scan/Pages/splash.dart';
 import 'package:can_scan/Pages/stories.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyAn6TSXQb1LBLj4DiEUgH_E8aKdfW32l54",
+      appId: "1:92358301341:android:4466a7e344328b971f6674",
+      projectId: "canscan-proj",
+      storageBucket: "canscan-proj.firebasestorage.app",
+      messagingSenderId: '',
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -37,9 +47,7 @@ class MyApp extends StatelessWidget {
       ),
       title: 'CanScan',
       debugShowCheckedModeBanner: false,
-      home: CommunityStoriesPage(),
+      home: SplashScreen(),
     );
   }
 }
-
-// Comment for commit.
