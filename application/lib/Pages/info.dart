@@ -1,5 +1,6 @@
 import 'package:can_scan/Pages/home.dart';
 import 'package:flutter/material.dart';
+import 'package:can_scan/Pages/stories.dart';
 import 'package:can_scan/Pages/cam.dart';
 
 class AboutPage extends StatelessWidget {
@@ -22,8 +23,12 @@ class AboutPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildNavButton(Icons.settings, () {
-                // Handel Settings Tap
+              _buildNavButton(Icons.auto_stories, () {
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
+                  );
+                };
               }),
               _buildNavButton(Icons.info, () {
                 onPressed: () {

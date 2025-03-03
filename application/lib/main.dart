@@ -4,6 +4,7 @@ import 'package:can_scan/Pages/cam.dart';
 import 'package:can_scan/Pages/login.dart';
 import 'package:can_scan/Pages/info.dart';
 import 'package:can_scan/Pages/splash.dart';
+import 'package:can_scan/Pages/stories.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() {
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
       title: 'CanScan',
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: CommunityStoriesPage(),
     );
   }
 }

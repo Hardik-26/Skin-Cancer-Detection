@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:can_scan/Pages/cam.dart';
+import 'package:can_scan/Pages/stories.dart';
 import 'package:can_scan/Pages/info.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -46,8 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildNavButton(Icons.settings, () {
-                // Handel Settings Tap
+              _buildNavButton(Icons.auto_stories, () {
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
+                  );
+                };
               }),
               _buildNavButton(Icons.info, () {
                 onPressed: () {
