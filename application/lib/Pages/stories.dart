@@ -47,7 +47,7 @@ class CommunityStoriesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Community Stories', style: TextStyle(fontFamily: 'BaskervvilleSC')),
-        backgroundColor: Color(0xFFAD88C6),
+        //backgroundColor: Color(0xFFAD88C6),
       ),
 
       bottomNavigationBar: BottomAppBar(
@@ -60,26 +60,20 @@ class CommunityStoriesPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildNavButton(Icons.auto_stories, () {
-                onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
                   );
-                };
               }),
               _buildNavButton(Icons.info, () {
-                onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => AboutPage()),
                   );
-                };
               }),
               SizedBox(width: 0),
               _buildNavButton(Icons.home, () {
-                onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (context) => MyHomePage()),
                   );
-                };
               }),
               _buildNavButton(Icons.person, () {
                 // Handel Profile Tap

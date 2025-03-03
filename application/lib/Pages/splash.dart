@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:can_scan/Pages/home.dart';
-import 'package:can_scan/Pages/login.dart';// Import your home screen
+
+// Define a callback type for when splash screen finishes
+typedef SplashFinishedCallback = Future<Widget> Function();
 
 class SplashScreen extends StatefulWidget {
+  final SplashFinishedCallback onSplashFinished;
+
+  SplashScreen({required this.onSplashFinished});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   late VideoPlayerController _controller;
+  bool _isVideoComplete = false;
 
   @override
   void initState() {
@@ -21,13 +27,22 @@ class _SplashScreenState extends State<SplashScreen> {
       });
 
     _controller.addListener(() {
-      if (_controller.value.position == _controller.value.duration) {
-        // Navigate to home screen when video ends
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Login()),
-        );
+      if (_controller.value.position == _controller.value.duration && !_isVideoComplete) {
+        _isVideoComplete = true;
+        _navigateToNextScreen();
       }
     });
+  }
+
+  Future<void> _navigateToNextScreen() async {
+    // Call the callback function to determine where to navigate
+    final nextScreen = await widget.onSplashFinished();
+
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => nextScreen),
+      );
+    }
   }
 
   @override
@@ -64,4 +79,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-// Comment for commit.

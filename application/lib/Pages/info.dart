@@ -11,7 +11,7 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Information', style: TextStyle(fontFamily: 'BaskervvilleSC')),
-        backgroundColor: Color(0xFFAD88C6),
+        //backgroundColor: Color(0xFFAD88C6),
       ),
 
       bottomNavigationBar: BottomAppBar(
@@ -24,26 +24,20 @@ class AboutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildNavButton(Icons.auto_stories, () {
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
-                  );
-                };
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
+                );
               }),
               _buildNavButton(Icons.info, () {
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => AboutPage()),
-                  );
-                };
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => AboutPage()),
+                );
               }),
               SizedBox(width: 0),
               _buildNavButton(Icons.home, () {
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
-                  );
-                };
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyHomePage()),
+                );
               }),
               _buildNavButton(Icons.person, () {
                 // Handel Profile Tap
@@ -67,7 +61,7 @@ class AboutPage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,24 +74,24 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 10),
             const Text(
               "Skin cancer is the abnormal growth of skin cells, often caused by prolonged exposure to ultraviolet (UV) radiation from the sun or artificial sources like tanning beds. It is one of the most common types of cancer but is also one of the most preventable and treatable when detected early.",
-              style: TextStyle(fontSize: 16, color: Colors.black54),
+              style: TextStyle(fontSize: 16, color: Colors.black54),textAlign: TextAlign.justify
             ),
             const SizedBox(height: 20),
 
             // Types of Skin Cancer
             const Text(
               "Types of Skin Cancer",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),textAlign: TextAlign.justify
             ),
             const SizedBox(height: 10),
             _buildFeatureCard(
-              "Basal Cell Carcinoma (BCC)",
+              "Basal Cell Carcinoma",
               "It appears as a flesh-colored, pearl-like bump or a pinkish patch of skin. It grows slowly and rarely spreads but can cause local tissue damage.",
               'assets/aboutAssets/BCC.jpeg',
             ),
             const SizedBox(height: 10),
             _buildFeatureCard(
-              "Squamous Cell Carcinoma (SCC)",
+              "Squamous Cell Carcinoma",
               "Often appearing as a firm, red bump or a scaly patch, it can grow deeper into the skin and spread if untreated.",
               'assets/aboutAssets/SCC.jpeg',
             ),
@@ -162,14 +156,14 @@ class AboutPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: Image.asset(imagePath, width: 50, height: 50, fit: BoxFit.cover),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
-                  Text(description, style: const TextStyle(fontSize: 14, color: Colors.black87)),
+                  Text(description, style: const TextStyle(fontSize: 14, color: Colors.black87),textAlign: TextAlign.justify),
                 ],
               ),
             ),
@@ -189,8 +183,8 @@ class AboutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         onTap: onPressed,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(icon, size: 32, color: Colors.white),
+          padding: const EdgeInsets.all(2.0),
+          child: Icon(icon, size: 36, color: Colors.white),
         ),
       ),
     );

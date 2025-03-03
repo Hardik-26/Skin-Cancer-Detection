@@ -48,18 +48,14 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildNavButton(Icons.auto_stories, () {
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.push(context,
                     MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
                   );
-                };
               }),
               _buildNavButton(Icons.info, () {
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AboutPage()),
                   );
-                };
               }),
               SizedBox(width: 0),
               _buildNavButton(Icons.home, () {
@@ -75,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushReplacement(
+          Navigator.push(context,
             MaterialPageRoute(builder: (context) => CameraApp()),
           );
         },
