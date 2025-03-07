@@ -5,6 +5,12 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
+import 'mole_data_handler.dart'; // Import the new file
+import 'dart:convert';  // For JSON encoding
+import 'package:http/http.dart' as http;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as path;
+import 'package:uuid/uuid.dart';
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -23,6 +29,7 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
   int _currentCarouselIndex = 0;
   bool _showPinchAnimation = false;
   String? _screenshotUrl;
+  Map<String, dynamic>? _combinedData;
 
   // Hardcoded images for carousel
   final List<String> _carouselImages = [
@@ -122,6 +129,7 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
       _image = null;
       _transformationController.value = Matrix4.identity();
       _screenshotUrl = null;
+      _combinedData = null;
     });
   }
 
@@ -166,14 +174,162 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
           _screenshotUrl = file.path;
         });
 
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Screenshot saved: ${file.path}')),
-        // );
+        // Show mole data collection carousel after screenshot is saved
+        await _collectMoleDataAndUserInfo();
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to capture screenshot: $e')),
       );
+    }
+  }
+
+  // New method to collect mole data and user info
+  Future<void> _collectMoleDataAndUserInfo() async {
+    if (_screenshotUrl == null) return;
+
+    try {
+      // Upload image to Firebase Storage and get the download URL
+      final String? firebaseImageUrl = await uploadImageToFirebase(_screenshotUrl!);
+
+      if (firebaseImageUrl == null) {
+        throw Exception('Failed to upload image to Firebase Storage');
+      }
+
+      // Step 1: Collect mole data from user via carousel
+      // Now using the Firebase URL instead of local path
+      final moleData = await MoleDataHandler.showMoleDataCarousel(
+          context,
+          firebaseImageUrl
+      );
+
+      // Step 2: Retrieve user data from Firebase
+      final userData = await MoleDataHandler.getUserData();
+
+      // Step 3: Combine mole data and user data
+      final combinedData = await MoleDataHandler.combineData(
+          moleData,
+          userData
+      );
+
+      // Add the Firebase image URL to the combined data
+      combinedData['imageUrl'] = firebaseImageUrl;
+
+      setState(() {
+        _combinedData = combinedData;
+      });
+
+      // Step 4: Send data to FastAPI
+      await _sendDataToApi(combinedData);
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error processing mole data: $e')),
+      );
+    }
+  }
+
+  Future<void> _sendDataToApi(Map<String, dynamic> combinedData) async {
+    try {
+      final url = Uri.parse("https://rnnxe-103-215-237-26.a.free.pinggy.link/predict");
+
+      // The FastAPI pydantic model expects a specific format
+      // Check the structure of the data you're sending
+      final data = jsonEncode({
+        "data": combinedData["data"],
+        "imageUrl": combinedData["imageUrl"] // Include the Firebase image URL
+      });
+
+      print("Sending data to API: $data");
+
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Row(
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 20),
+                Text("Analyzing image...")
+              ],
+            ),
+          );
+        },
+      );
+
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      );
+
+      // Close loading dialog
+      Navigator.of(context).pop();
+
+      print("Full response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("Success: ${response.body}");
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Analysis complete!'), duration: Duration(seconds: 2)),
+        );
+
+        // Handle the API response data
+        final responseData = jsonDecode(response.body);
+
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        throw Exception("API returned status code ${response.statusCode}: ${response.body}");
+      }
+    } catch (e) {
+      print("API error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sending data to server: $e')),
+      );
+    }
+  }
+
+  Future<String?> uploadImageToFirebase(String imagePath) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("Uploading Image")
+            ],
+          ),
+        );
+      },
+    );
+    try {
+      final File imageFile = File(imagePath);
+      final String fileName = '${Uuid().v4()}${path.extension(imagePath)}';
+      final Reference storageRef = FirebaseStorage.instance.ref().child('mole_images/$fileName');
+
+      // Upload the file to Firebase Storage
+      final UploadTask uploadTask = storageRef.putFile(imageFile);
+
+      // Wait for the upload to complete and get the download URL
+      final TaskSnapshot taskSnapshot = await uploadTask;
+      final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      print('Image uploaded successfully: $downloadUrl');
+
+      Navigator.of(context).pop();
+
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading image to Firebase: $e');
+      return null;
     }
   }
 
@@ -322,5 +478,6 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+
+
 }
-// Comment for commit.

@@ -10,6 +10,8 @@ import torch.nn as nn
 from torchvision import models
 import requests
 from io import BytesIO
+import sys
+import pickle
 
 app = FastAPI()
 
@@ -20,7 +22,7 @@ async def root():
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class pd(BaseModel):
-    data: Dict[str, Union[str, int]]
+    data: Dict[str, Union[str, int, float]]
 
 # Multimodal CNN model
 class SkinCancerModel(nn.Module):
@@ -89,13 +91,23 @@ class SkinCancerModel(nn.Module):
         return output
 
 
-def predict_skin_cancer(image_path, patient_data):
+def register_pickle_class():
+    # Get the current module
+    current_module = sys.modules[__name__]
 
+    # Register SkinCancerModel in the current module
+    setattr(current_module, 'SkinCancerModel', SkinCancerModel)
+
+register_pickle_class()
+
+def predict_skin_cancer(item):
+    image_path=item.pop("image_path")
     # Set device
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # Load the model
     try:
+        register_pickle_class()
         model = torch.load(r"CNN/CNN.pt", map_location=device, weights_only=False)
         model.eval()
     except Exception as e:
@@ -105,7 +117,7 @@ def predict_skin_cancer(image_path, patient_data):
     important_features = ['itch', 'grew', 'hurt', 'changed', 'bleed', 'fitzpatrick', 'age']
 
     # Define all features except RESULT and img_id (based on the patient_data dictionary)
-    all_features = list(patient_data.keys())
+    all_features = list(item.keys())
     other_features = [feat for feat in all_features if feat not in important_features]
 
     # Define image transformations (must match the validation transforms from training)
@@ -126,12 +138,12 @@ def predict_skin_cancer(image_path, patient_data):
 
     # Process important features
     important_features_tensor = torch.tensor([
-        patient_data.get(feat, 0) for feat in important_features
+        item.get(feat, 0) for feat in important_features
     ], dtype=torch.float32).unsqueeze(0).to(device)
 
     # Process other features
     other_features_tensor = torch.tensor([
-        patient_data.get(feat, 0) for feat in other_features
+        item.get(feat, 0) for feat in other_features
     ], dtype=torch.float32).unsqueeze(0).to(device)
 
     # Make prediction
@@ -146,13 +158,10 @@ def predict_skin_cancer(image_path, patient_data):
     return probability, prediction
 
 @app.post("/predict")
-async def predict(img: str,patient_data: pd):
+async def predict_data(item: pd):
 
-    print("data= ",patient_data.data)
-    print("Image= ", img)
-    response = requests.get(img)
-    image = Image.open(BytesIO(response.content))
-    print(image)
+    print("data= ", item.data)
+    print("Image= ", item.data["image_path"])
 
-    # prob,pred=predict_skin_cancer(img, patient_data.data)
-    # return {"message": "OK : 200", "prob":prob, "pred":pred}
+    prob,pred=predict_skin_cancer(item.data)
+    return {"message": "OK : 200", "prob":prob, "pred":pred}
