@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:can_scan/Pages/home.dart';
+import 'package:can_scan/Pages/profile.dart';
 import 'package:can_scan/Pages/cam.dart';
 import 'package:can_scan/Pages/info.dart';
 
@@ -60,9 +61,6 @@ class CommunityStoriesPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildNavButton(Icons.auto_stories, () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
-                  );
               }),
               _buildNavButton(Icons.info, () {
                   Navigator.of(context).pushReplacement(
@@ -76,7 +74,9 @@ class CommunityStoriesPage extends StatelessWidget {
                   );
               }),
               _buildNavButton(Icons.person, () {
-                // Handel Profile Tap
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               }),
             ],
           ),

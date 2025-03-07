@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:can_scan/Pages/cam.dart';
 import 'package:can_scan/Pages/stories.dart';
+import 'package:can_scan/Pages/profile.dart';
 import 'package:can_scan/Pages/info.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -63,6 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
               }),
               _buildNavButton(Icons.person, () {
                 // Handel Profile Tap
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               }),
             ],
           ),

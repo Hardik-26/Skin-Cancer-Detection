@@ -1,6 +1,7 @@
 import 'package:can_scan/Pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:can_scan/Pages/stories.dart';
+import 'package:can_scan/Pages/profile.dart';
 import 'package:can_scan/Pages/cam.dart';
 
 class AboutPage extends StatelessWidget {
@@ -29,9 +30,6 @@ class AboutPage extends StatelessWidget {
                 );
               }),
               _buildNavButton(Icons.info, () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => AboutPage()),
-                );
               }),
               SizedBox(width: 0),
               _buildNavButton(Icons.home, () {
@@ -40,7 +38,9 @@ class AboutPage extends StatelessWidget {
                 );
               }),
               _buildNavButton(Icons.person, () {
-                // Handel Profile Tap
+                Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
               }),
             ],
           ),
