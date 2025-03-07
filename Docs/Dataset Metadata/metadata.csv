@@ -1,4 +1,4 @@
-smokes,drinks,age,pesticide_exposore,skin_cancer_history,cancer_history,has_piped_water,has_sewage_system,fitzpatrick,diameter,RESULT,itch,grew,hurt,changed,bleed,img_id,region_ABDOMEN,region_ARM,region_BACK,region_CHEST,region_EAR,region_FACE,region_FOOT,region_FOREARM,region_HAND,region_LIP,region_NECK,region_NOSE,region_SCALP,region_THIGH,gender_FEMALE,gender_MALE,gender_OTHER
+smokes,drinks,age,pesticide_exposure,skin_cancer_history,cancer_history,has_piped_water,has_sewage_system,fitzpatrick,diameter,RESULT,itch,grew,hurt,changed,bleed,img_id,region_ABDOMEN,region_ARM,region_BACK,region_CHEST,region_EAR,region_FACE,region_FOOT,region_FOREARM,region_HAND,region_LIP,region_NECK,region_NOSE,region_SCALP,region_THIGH,gender_FEMALE,gender_MALE,gender_OTHER
 0,0,0.022727272727272735,0,0,0,1,1,0.2,0.11897054886211514,0,0,0,0,0,0,PAT_1516_1765_530.png,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 0,0,0.5568181818181819,0,1,1,1,1,0.4000000000000001,0.06,1,1,1,0,1,1,PAT_46_881_939.png,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0
 0,0,0.8068181818181819,0,0,0,1,1,0.2,0.11897054886211514,0,1,0,0,0,0,PAT_1545_1867_547.png,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1

@@ -9,3 +9,9 @@ GET http://127.0.0.1:8000/hello/User
 Accept: application/json
 
 ###
+POST http://127.0.0.1:8000/rec
+Accept: application/json
+
+
+# fastapi dev main.py
+# ssh -p 443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R0:127.0.0.1:8000 a.pinggy.io
