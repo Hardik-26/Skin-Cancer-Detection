@@ -71,7 +71,7 @@ class ResultTrue extends StatelessWidget {
                             "4. Maintain a healthy lifestyle with proper diet, exercise, and stress management.\n\n"
                             "5. Plan finances, check insurance coverage, and arrange caregiver support if needed.\n\n"
                             "6. Follow up regularly to monitor progress and prevent recurrence.",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 13),
                       ),
                     ],
                   ),

@@ -10,8 +10,6 @@ import torch.nn as nn
 from torchvision import models
 import requests
 from io import BytesIO
-import sys
-import pickle
 
 app = FastAPI()
 
@@ -90,16 +88,6 @@ class SkinCancerModel(nn.Module):
         output = self.fusion(combined)
         return output
 
-
-def register_pickle_class():
-    # Get the current module
-    current_module = sys.modules[__name__]
-
-    # Register SkinCancerModel in the current module
-    setattr(current_module, 'SkinCancerModel', SkinCancerModel)
-
-register_pickle_class()
-
 def predict_skin_cancer(item):
     image_path=item.pop("image_path")
     # Set device
@@ -107,9 +95,21 @@ def predict_skin_cancer(item):
 
     # Load the model
     try:
-        register_pickle_class()
-        model = torch.load(r"CNN/CNN.pt", map_location=device, weights_only=False)
+        # Create a new model instance with the right architecture
+        num_important_features = 7  # Length of important_features list
+        all_features = list(item.keys())
+        important_features = ['itch', 'grew', 'hurt', 'changed', 'bleed', 'fitzpatrick', 'age']
+        other_features = [feat for feat in all_features if feat not in important_features]
+        num_other_features = len(other_features)
+
+        # Create the model
+        model = SkinCancerModel(num_important_features, num_other_features)
+
+        # Load the state dictionary
+        model.load_state_dict(torch.load(r"CNN/CNN_state_dict.pt", map_location=device,weights_only=False))
+        model.to(device)
         model.eval()
+
     except Exception as e:
         raise Exception(f"Error loading model: {e}")
 
@@ -132,6 +132,7 @@ def predict_skin_cancer(item):
     try:
         response = requests.get(image_path)
         image = Image.open(BytesIO(response.content))
+        image = image.convert('RGB')
         image_tensor = val_transforms(image).unsqueeze(0).to(device)
     except Exception as e:
         raise Exception(f"Error processing image: {e}")

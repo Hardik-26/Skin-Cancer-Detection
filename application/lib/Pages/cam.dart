@@ -11,6 +11,8 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as path;
 import 'package:uuid/uuid.dart';
+import 'package:can_scan/Pages/resultFalse.dart';
+import 'package:can_scan/Pages/resultTrue.dart';
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -231,7 +233,7 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
 
   Future<void> _sendDataToApi(Map<String, dynamic> combinedData) async {
     try {
-      final url = Uri.parse("https://rnnxe-103-215-237-26.a.free.pinggy.link/predict");
+      final url = Uri.parse("https://rnzth-103-215-237-26.a.free.pinggy.link/predict");
 
       // The FastAPI pydantic model expects a specific format
       // Check the structure of the data you're sending
@@ -281,6 +283,18 @@ class _CameraAppState extends State<CameraApp> with SingleTickerProviderStateMix
 
         // Handle the API response data
         final responseData = jsonDecode(response.body);
+        print(responseData);
+        if (responseData['pred'] == 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ResultFalse()),
+          );
+        } else if (responseData['pred'] == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ResultTrue()),
+          );
+        }
 
       } else {
         print("Error: ${response.statusCode} - ${response.body}");

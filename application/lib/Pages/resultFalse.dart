@@ -85,6 +85,7 @@ class ResultFalse extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 40)
               ],
             ),
           ),
