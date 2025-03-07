@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:can_scan/Pages/cam.dart';
+import 'package:can_scan/Pages/home.dart';
+import 'package:can_scan/Pages/stories.dart';
+import 'package:can_scan/Pages/info.dart';
+
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -11,7 +16,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile', style: TextStyle(fontFamily: 'BaskervvilleSC')),
-        backgroundColor: Color(0xFFAD88C6),
+        backgroundColor: Color(0xFF7469B6),
       ),
 
       bottomNavigationBar: BottomAppBar(
@@ -23,11 +28,24 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildNavButton(Icons.settings, () {}),
-              _buildNavButton(Icons.info, () {}),
+              _buildNavButton(Icons.auto_stories, () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => CommunityStoriesPage()),
+                );
+              }),
+              _buildNavButton(Icons.info, () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => AboutPage()),
+                );
+              }),
               SizedBox(width: 0),
-              _buildNavButton(Icons.home, () {}),
-              _buildNavButton(Icons.person, () {}),
+              _buildNavButton(Icons.home, () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyHomePage()),
+                );
+              }),
+              _buildNavButton(Icons.person, () {
+              }),
             ],
           ),
         ),
@@ -35,7 +53,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Placeholder for adding a new action
+          Navigator.push(context,
+            MaterialPageRoute(builder: (context) => CameraApp()),
+          );
         },
         backgroundColor: Colors.transparent,
         shape: CircleBorder(),

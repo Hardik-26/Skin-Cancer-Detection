@@ -63,8 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 fetchItems();
               }),
               _buildNavButton(Icons.person, () {
-                // Handel Profile Tap
-                Navigator.push(context,
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => ProfilePage()),
                 );
               }),

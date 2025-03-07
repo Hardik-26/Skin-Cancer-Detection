@@ -48,7 +48,7 @@ class CommunityStoriesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Community Stories', style: TextStyle(fontFamily: 'BaskervvilleSC')),
-        //backgroundColor: Color(0xFFAD88C6),
+        backgroundColor: Color(0xFF7469B6),
       ),
 
       bottomNavigationBar: BottomAppBar(
